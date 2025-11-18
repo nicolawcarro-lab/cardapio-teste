@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>FastBurguer - Cardápio Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --vermelho: #e32626;
+      --laranja: #ff7a1a;
+      --amarelo: #ffd54a;
+      --fundo: #0f0f0f;
+      --cartao: #181818;
+      --texto: #f9f9f9;
+      --cinza: #b8b8b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #2a0505 0, #050505 55%);
+      color: var(--texto);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    header {
+      padding: 16px 14px 6px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: var(--laranja);
+      text-shadow: 0 0 12px rgba(255, 122, 26, 0.6);
+    }
+
+    .subtitulo {
+      font-size: 13px;
+      color: var(--cinza);
+      margin-top: 4px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.5);
+      color: #ffd9a0;
+    }
+
+    .tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #02c94b;
+      box-shadow: 0 0 6px #02c94b;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 10px 12px 24px;
+    }
+
+    .secao {
+      margin-top: 18px;
+    }
+
+    .secao-titulo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .secao-titulo::before {
+      content: "";
+      width: 5px;
+      height: 18px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--vermelho), var(--laranja));
+    }
+
+    .grid-itens {
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (min-width: 700px) {
+      .grid-itens {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .item {
+      background: linear-gradient(145deg, #1a0909, #131313);
+      border-radius: 18px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .foto-wrapper {
+      border-radius: 14px;
+      overflow: hidden;
+      height: 150px;
+      background: #222;
+      position: relative;
+    }
+
+    .foto-item {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.03);
+    }
+
+    .item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .item-nome {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .item-descricao {
+      font-size: 12px;
+      color: var(--cinza);
+      line-height: 1.3;
+      min-height: 28px;
+    }
+
+    .item-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .item-preco {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--amarelo);
+      text-shadow: 0 0 8px rgba(255, 213, 74, 0.6);
+    }
+
+    .btn-add {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(90deg, var(--laranja), var(--vermelho));
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+    }
+
+    .btn-add span {
+      font-size: 15px;
+    }
+
+    .linha {
+      border: none;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      margin: 20px 0 10px;
+    }
+
+    .horario {
+      font-size: 11px;
+      color: var(--cinza);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 10px;
+      color: #777;
+      margin-top: 10px;
+    }
+
+    .btn-carrinho {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 12px;
+      width: min(480px, calc(100% - 24px));
+      background: linear-gradient(90deg, #02c94b, #0a8f37);
+      color: #fff;
+      border-radius: 999px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8);
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    .btn-carrinho-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-carrinho {
+      font-size: 17px;
+    }
+
+    .badge-qtd {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.25);
+      font-size: 11px;
+    }
+
+    .total-carrinho {
+      font-size: 12px;
+    }
+
+    .overlay-resumo {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      padding: 16px;
+    }
+
+    .resumo-card {
+      background: #141414;
+      border-radius: 18px;
+      padding: 14px;
+      max-width: 430px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .resumo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .resumo-header h3 {
+      font-size: 15px;
+    }
+
+    .resumo-lista {
+      max-height: 220px;
+      overflow-y: auto;
+      margin-top: 4px;
+      padding-right: 4px;
+    }
+
+    .resumo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    }
+
+    .resumo-nome {
+      max-width: 60%;
+    }
+
+    .resumo-qtd {
+      font-size: 11px;
+      color: var(--cinza);
+    }
+
+    .resumo-total {
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 8px;
+      text-align: right;
+      color: var(--amarelo);
+    }
+
+    .resumo-acoes {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn-secundario,
+    .btn-primario {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secundario {
+      background: #2b2b2b;
+      color: #fff;
+    }
+
+    .btn-primario {
+      background: linear-gradient(90deg, var(--laranja), var(--vermelho));
+      color: #fff;
+    }
+
+    .chip-categoria {
+      font-size: 10px;
+      color: #ffb69c;
+      background: rgba(255, 122, 26, 0.12);
+      padding: 2px 8px;
+      border-radius: 999px;
+      align-self: flex-start;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><span>Fast</span>Burguer</div>
+    <p class="subtitulo">Hambúrgueres, combos, bebidas e sobremesas feitos na hora.</p>
+    <div class="tag">
+      <span class="tag-dot"></span>
+      Funcionando de Terça a Sábado, das 17h às 22h.
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- LANCHES -->
+    <section class="secao" id="lanches">
+      <h2 class="secao-titulo">Lanches</h2>
+      <div class="grid-itens">
+        <!-- Classic Fast -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/classic-fast.webp" alt="Classic Fast" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Classic Fast</div>
+            <p class="item-descricao">
+              Burger artesanal no pão brioche com alface, tomate e molho da casa.
+            </p>
+            <span class="chip-categoria">Lanche</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 18,90</div>
+            <button class="btn-add" onclick="addToCart('Classic Fast', 18.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+
+        <!-- Cheddar Melt Burguer -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/cheddar-melt-burguer.webp" alt="Cheddar Melt Burguer" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Cheddar Melt Burguer</div>
+            <p class="item-descricao">
+              Pão com gergelim, burger, muito cheddar cremoso e cebola ao molho especial.
+            </p>
+            <span class="chip-categoria">Lanche</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 22,90</div>
+            <button class="btn-add" onclick="addToCart('Cheddar Melt Burguer', 22.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+
+        <!-- Duplo Smash Fast -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/duplo-smash-fast.webp" alt="Duplo Smash Fast" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Duplo Smash Fast</div>
+            <p class="item-descricao">
+              Dois smash super suculentos, queijo derretido e bacon crocante.
+            </p>
+            <span class="chip-categoria">Lanche</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 26,90</div>
+            <button class="btn-add" onclick="addToCart('Duplo Smash Fast', 26.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <hr class="linha" />
+
+    <!-- COMBOS -->
+    <section class="secao" id="combos">
+      <h2 class="secao-titulo">Combos</h2>
+      <div class="grid-itens">
+        <!-- Combo Classic -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/combo-classic.webp" alt="Combo Classic" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Combo Classic</div>
+            <p class="item-descricao">
+              Classic Fast + batata média + refrigerante lata.
+            </p>
+            <span class="chip-categoria">Combo</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 29,90</div>
+            <button class="btn-add" onclick="addToCart('Combo Classic', 29.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+
+        <!-- Combo Cheddar Melt -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/combo-cheddar-melt.webp" alt="Combo Cheddar Melt" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Combo Cheddar Melt</div>
+            <p class="item-descricao">
+              Cheddar Melt Burguer + batata média + refrigerante lata.
+            </p>
+            <span class="chip-categoria">Combo</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 34,90</div>
+            <button class="btn-add" onclick="addToCart('Combo Cheddar Melt', 34.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+
+        <!-- Combo Duplo Smash -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/combo-duplo-smash.webp" alt="Combo Duplo Smash" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Combo Duplo Smash</div>
+            <p class="item-descricao">
+              Duplo Smash Fast + batata média + refrigerante 600ml.
+            </p>
+            <span class="chip-categoria">Combo</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 39,90</div>
+            <button class="btn-add" onclick="addToCart('Combo Duplo Smash', 39.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <hr class="linha" />
+
+    <!-- BEBIDAS -->
+    <section class="secao" id="bebidas">
+      <h2 class="secao-titulo">Bebidas</h2>
+      <div class="grid-itens">
+        <!-- Refrigerante 600ml -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/refri-600.webp" alt="Refrigerante 600ml" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Refrigerante 600ml</div>
+            <p class="item-descricao">
+              Várias opções de sabores geladinhos em garrafa 600ml.
+            </p>
+            <span class="chip-categoria">Bebida</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 8,00</div>
+            <button class="btn-add" onclick="addToCart('Refrigerante 600ml', 8.00)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+
+        <!-- Refrigerante lata -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/refri-lata.webp" alt="Refrigerante lata" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Refrigerante Lata</div>
+            <p class="item-descricao">
+              Latas geladas de diversos sabores tradicionais.
+            </p>
+            <span class="chip-categoria">Bebida</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 6,00</div>
+            <button class="btn-add" onclick="addToCart('Refrigerante Lata', 6.00)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+
+        <!-- Suco natural -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/suco-natural.webp" alt="Suco Natural" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Suco Natural</div>
+            <p class="item-descricao">
+              Sucos naturais de laranja, limão ou maracujá.
+            </p>
+            <span class="chip-categoria">Bebida</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 9,90</div>
+            <button class="btn-add" onclick="addToCart('Suco Natural', 9.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <hr class="linha" />
+
+    <!-- SOBREMESAS -->
+    <section class="secao" id="sobremesas">
+      <h2 class="secao-titulo">Sobremesas</h2>
+      <div class="grid-itens">
+        <!-- Brownie -->
+        <article class="item">
+          <div class="foto-wrapper">
+            <img src="imagens/brownie.webp" alt="Brownie com Calda Quente" class="foto-item" />
+          </div>
+          <div class="item-info">
+            <div class="item-nome">Brownie com Calda Quente</div>
+            <p class="item-descricao">
+              Brownie de chocolate bem molhadinho com calda quente.
+            </p>
+            <span class="chip-categoria">Sobremesa</span>
+          </div>
+          <div class="item-bottom">
+            <div class="item-preco">R$ 12,90</div>
+            <button class="btn-add" onclick="addToCart('Brownie com Calda Quente', 12.90)">
+              <span>＋</span> Adicionar
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p class="horario">
+      Funcionamento: Terça a Sábado, das 17h às 22h. Valores sujeitos a alteração.
+    </p>
+
+    <footer>
+      Cardápio digital desenvolvido para FastBurguer.
+    </footer>
+  </main>
+
+  <!-- Botão fixo do carrinho -->
+  <div class="btn-carrinho" onclick="abrirResumo()">
+    <div class="btn-carrinho-main">
+      <span class="icon-carrinho">🛒</span>
+      <span>Carrinho (<span id="cart-count">0</span> itens)</span>
+    </div>
+    <div class="total-carrinho">
+      Total: <span id="cart-total">R$ 0,00</span>
+    </div>
+  </div>
+
+  <!-- Overlay de resumo do carrinho -->
+  <div class="overlay-resumo" id="overlay-resumo">
+    <div class="resumo-card">
+      <div class="resumo-header">
+        <h3>Seu pedido FastBurguer</h3>
+        <button class="btn-secundario" onclick="fecharResumo()">✕</button>
+      </div>
+      <div class="resumo-lista" id="resumo-lista">
+        <!-- itens via JS -->
+      </div>
+      <div class="resumo-total" id="resumo-total">Total: R$ 0,00</div>
+      <div class="resumo-acoes">
+        <button class="btn-secundario" onclick="limparCarrinho()">Limpar</button>
+        <button class="btn-primario" onclick="finalizarPedido()">Finalizar pelo WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cart = [];
+
+    function addToCart(name, price) {
+      const item = cart.find((i) => i.name === name);
+      if (item) {
+        item.qtd += 1;
+      } else {
+        cart.push({ name, price, qtd: 1 });
+      }
+      atualizarResumoVisual();
+    }
+
+    function atualizarResumoVisual() {
+      const countEl = document.getElementById("cart-count");
+      const totalEl = document.getElementById("cart-total");
+
+      let total = 0;
+      let qtdTotal = 0;
+      cart.forEach((i) => {
+        total += i.price * i.qtd;
+        qtdTotal += i.qtd;
+      });
+
+      countEl.textContent = qtdTotal;
+      totalEl.textContent = "R$ " + total.toFixed(2).replace(".", ",");
+    }
+
+    function abrirResumo() {
+      if (cart.length === 0) {
+        alert("Seu carrinho está vazio.");
+        return;
+      }
+      const overlay = document.getElementById("overlay-resumo");
+      const listaEl = document.getElementById("resumo-lista");
+      const totalEl = document.getElementById("resumo-total");
+
+      listaEl.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item) => {
+        total += item.price * item.qtd;
+        const div = document.createElement("div");
+        div.className = "resumo-item";
+        div.innerHTML = `
+          <div>
+            <div class="resumo-nome">${item.name}</div>
+            <div class="resumo-qtd">Qtd: ${item.qtd}</div>
+          </div>
+          <div>R$ ${(item.price * item.qtd).toFixed(2).replace(".", ",")}</div>
+        `;
+        listaEl.appendChild(div);
+      });
+
+      totalEl.textContent = "Total: R$ " + total.toFixed(2).replace(".", ",");
+
+      overlay.style.display = "flex";
+    }
+
+    function fecharResumo() {
+      document.getElementById("overlay-resumo").style.display = "none";
+    }
+
+    function limparCarrinho() {
+      cart.length = 0;
+      atualizarResumoVisual();
+      fecharResumo();
+    }
+
+    function finalizarPedido() {
+      if (cart.length === 0) {
+        alert("Seu carrinho está vazio.");
+        return;
+      }
+
+      let total = 0;
+      let linhas = cart
+        .map((item) => {
+          const subtotal = item.price * item.qtd;
+          total += subtotal;
+          return `- ${item.name} (Qtd: ${item.qtd}) — R$ ${subtotal
+            .toFixed(2)
+            .replace(".", ",")}`;
+        })
+        .join("%0A");
+
+      const mensagem =
+        `Ol%C3%A1,%20gostaria%20de%20fazer%20um%20pedido%20na%20FastBurguer:%0A` +
+        `${linhas}%0A%0A` +
+        `Total:%20R$%20${total.toFixed(2).replace(".", ",")}`;
+
+      const numero = "5511940895563"; // WhatsApp FastBurguer
+      const url = `https://wa.me/${numero}?text=${mensagem}`;
+      window.location.href = url;
+    }
+  </script>
+</body>
+</html>
